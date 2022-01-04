@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using static DemoDatabase.Local.Settings;
 
 namespace DemoDatabase.Domain
 {
@@ -12,6 +13,8 @@ namespace DemoDatabase.Domain
         private readonly string _path;
         private readonly int _version;
         private readonly string _password;
+
+        private static readonly Logger _logger = Logger.GetInstance();
 
         public ManagerRequestSQLite(string dataSource, int version, string password = null)
             :base(dataSource, version, password)
@@ -25,7 +28,11 @@ namespace DemoDatabase.Domain
         {
             var queryAll = querys.All(table);
 
-            var connectionString = new Connector(_path, 3).ConnectionString;
+            _logger.Insert.Debug(queryAll);
+
+            var connectionString = new Connector(_path, _version, _password).ConnectionString;
+
+            _logger.Insert.Debug(connectionString);
 
             using (var connection = new SQLiteConnection(connectionString))
             {
@@ -58,7 +65,9 @@ namespace DemoDatabase.Domain
                 }
                 catch (Exception exception)
                 {
-                    throw exception;
+                    _logger.Insert.Error(exception, exception.Message);
+
+                    throw;
                 }
                 finally
                 {
@@ -71,7 +80,7 @@ namespace DemoDatabase.Domain
         {
             var update = querys.Command(cliente.Id, cliente.Name, cliente.Address);
 
-            var connectionString = new Connector(_path, 3).ConnectionString;
+            var connectionString = new Connector(_path, _version, _password).ConnectionString;
 
             using (var connection = new SQLiteConnection(connectionString))
             {
@@ -85,7 +94,9 @@ namespace DemoDatabase.Domain
                 }
                 catch (Exception exception)
                 {
-                    throw exception;
+                    _logger.Insert.Error(exception, exception.Message);
+
+                    throw;
                 }
                 finally
                 {
@@ -96,13 +107,13 @@ namespace DemoDatabase.Domain
 
         public override bool Execute(Delete querys, string table, string key, int id)
         {
-            var update = querys.Command(table, key, id);
+            var delete = querys.Command(table, key, id);
 
-            var connectionString = new Connector(_path, 3).ConnectionString;
+            var connectionString = new Connector(_path, _version, _password).ConnectionString;
 
             using (var connection = new SQLiteConnection(connectionString))
             {
-                var command = new SQLiteCommand(update, connection);
+                var command = new SQLiteCommand(delete, connection);
 
                 try
                 {
@@ -112,7 +123,9 @@ namespace DemoDatabase.Domain
                 }
                 catch (Exception exception)
                 {
-                    throw exception;
+                    _logger.Insert.Error(exception, exception.Message);
+
+                    throw;
                 }
                 finally
                 {
@@ -125,7 +138,7 @@ namespace DemoDatabase.Domain
         {
             var insert = querys.Command(cliente.Name, cliente.Address, cliente.Movil);
 
-            var connectionString = new Connector(_path, 3).ConnectionString;
+            var connectionString = new Connector(_path, _version, _password).ConnectionString;
 
             using (var connection = new SQLiteConnection(connectionString))
             {
@@ -139,7 +152,9 @@ namespace DemoDatabase.Domain
                 }
                 catch (Exception exception)
                 {
-                    throw exception;
+                    _logger.Insert.Error(exception, exception.Message);
+
+                    throw;
                 }
                 finally
                 {
@@ -152,7 +167,7 @@ namespace DemoDatabase.Domain
         {
             var insert = querys.Command();
 
-            var connectionString = new Connector(_path, _version).ConnectionString;
+            var connectionString = new Connector(_path, _version, _password).ConnectionString;
 
             using (var connection = new SQLiteConnection(connectionString))
             {
@@ -187,7 +202,9 @@ namespace DemoDatabase.Domain
                         {
                             transaction.Rollback();
 
-                            throw exception;
+                            _logger.Insert.Error(exception, exception.Message);
+
+                            throw;
                         }
                         finally
                         {

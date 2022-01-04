@@ -1,17 +1,20 @@
 ﻿using DemoDatabase.Data;
 using System.Collections.Generic;
+using static DemoDatabase.Local.Settings;
 
 namespace DemoDatabase.Domain
 {
     public class SQLite
     {
-        private readonly string _path;
-        private readonly int _version;
-        private readonly string _password;
+        private readonly string _path = Parameterize.Path;
+        private readonly int _version = Parameterize.Version;
+        private readonly string _password = Parameterize.PasswordLite;
 
-        public SQLite(string path, int version, string password = null)
+        public SQLite() { }
+
+        public SQLite(string dataSource, int version, string password)
         {
-            _path = path;
+            _path = dataSource;
             _version = version;
             _password = password;
         }
@@ -58,10 +61,12 @@ namespace DemoDatabase.Domain
 
     public class SqlServer
     {
-        private readonly string _dataSource;
-        private readonly string _dataBase;
-        private readonly string _user;
-        private readonly string _password;
+        private readonly string _dataSource = Parameterize.DataSource;
+        private readonly string _dataBase = Parameterize.DataBase;
+        private readonly string _user = Parameterize.UserId;
+        private readonly string _password = Parameterize.PasswordServer;
+
+        public SqlServer() { }
 
         public SqlServer(string dataSource, string dataBase, string user, string password)
         {

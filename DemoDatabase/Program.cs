@@ -4,44 +4,39 @@ using DemoDatabase.Local;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using static DemoDatabase.Local.Settings;
 
 namespace DemoDatabase
 {
     public class Program
     {
-        private static readonly string path = @"C:\Users\edelossantos\source\repos\DemoDatabase\DemoDatabase\Resources\pruebaDB.db";
-        private static readonly int version = 3;
+        private static readonly Logger _logger = Logger.GetInstance();
 
         static void Main(string[] args)
         {
-            //Delete();
-            //Show(ConsultLinq("ma"));
+            _logger.Insert.Information("Iniciando");
 
-            CreateBatchSuccessful();
+            //Delete();
+            Show(ConsultLinq(numberPage: 1, sizePage: 10));
+
+            //CreateBatchFailed();
+           // CreateBatchSuccessful();
+
+            _logger.Insert.Information("Finalizado");
 
             Console.ReadKey();
         }
 
-        static void Show(IEnumerable<Dto.Cliente> enumerable)
+        static void Show(IEnumerable<Dto.Cliente> clientes)
         {
             try
             {
-                foreach (var cliente in enumerable)
-                {
-                    var json = new
-                    {
-                        cliente.Id,
-                        cliente.Name,
-                        cliente.Address,
-                        cliente.Movil
-                    };
-
-                    Console.WriteLine(json.ToString());
-                }
+                _logger.Insert.Debug(JsonSerializer.Serialize(clientes));
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception);
+                _logger.Insert.Error(exception, exception.Message);
             }
         }
 
@@ -49,23 +44,23 @@ namespace DemoDatabase
         {
             Select querys = new Select();
 
-            return new SQLite(path, version).Command(querys, "Cliente");
+            return new SQLite().Command(querys, "Cliente");
         }
 
-        static IEnumerable<Dto.Cliente> ConsultLinq(string subQuery = null, int currentPage = 1, int pageSize = 10)
+        static IEnumerable<Dto.Cliente> ConsultLinq(string subQuery = null, int numberPage = 1, int sizePage = 10)
         {
             if (subQuery != null) subQuery = subQuery.ToLower();
 
             Select querys = new Select();
 
-            return new SQLite(path, version).Command(querys, "Cliente")
+            return new SQLite().Command(querys, "Cliente")
                 .Where(w => (subQuery == null) ||
                                            w.Id.ToString().Contains(subQuery) ||
                                            w.Name.ToString().Contains(subQuery) ||
                                            w.Address.ToString().Contains(subQuery) ||
                                            w.Movil.ToString().Contains(subQuery)
-                         ).Skip((currentPage - 1) * pageSize)
-                         .Take((currentPage * pageSize) - ((currentPage - 1) * pageSize));
+                         ).Skip((numberPage - 1) * sizePage)
+                         .Take((numberPage * sizePage) - ((numberPage - 1) * sizePage));
         }
 
         static void Create()
@@ -74,41 +69,48 @@ namespace DemoDatabase
             {
                 var querys = new Insert();
 
-                var isExecute = new SQLite(path, version).Command(querys, "Emmanuel", "C:/2, #321", 8932312);
+                var isExecute = new SQLite().Command(querys, "Emmanuel", "C:/2, #321", 8932312);
 
-                Console.WriteLine($"Cliente insertado: {isExecute}");
+                _logger.Insert.Debug($"Cliente insertado: {isExecute}");
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception);
+                _logger.Insert.Error(exception, exception.Message);
             }
         }
 
-        static void CreateBatchfailed()
+        static void CreateBatchFailed()
         {
             try
             {
+                _logger.Insert.Debug("Iniciando Method CreateBathFailed");
+
                 var querys = new Insert();
 
-                var clientes = new List<Dto.Cliente>();
+                _logger.Insert.Debug("Iniciando Lista de Objetos Cliente");
 
-                clientes.Add(new Dto.Cliente() { Name = "Teodoro", Address = "Martin #23", Movil = new Distributor().Movil });
-                clientes.Add(new Dto.Cliente() { Name = "Jose", Address = "FR #15", Movil = new Distributor().Movil });
-                clientes.Add(new Dto.Cliente() { Name = "Miguel", Address = "Naco #541", Movil = new Distributor().Movil });
-                clientes.Add(new Dto.Cliente() { Name = "Hector", Address = "J. Duarte #1", Movil = new Distributor().Movil });
-                clientes.Add(new Dto.Cliente() { Name = "Roman", Address = "Medina #3", Movil = new Distributor().Movil });
-                clientes.Add(new Dto.Cliente() { Name = "Maria", Address = "Don Gregorio #68", Movil = new Distributor().Movil });
-                clientes.Add(new Dto.Cliente() { Name = "Catia", Address = "Juan D. #26", Movil = new Distributor().Movil });
-                clientes.Add(new Dto.Cliente() { Name = "Miguelina", Address = "Nature #98", Movil = new Distributor().Movil });
-                clientes.Add(new Dto.Cliente() { Name = "Andreina", Address = "Martin #23", Movil = new Distributor().Movil });
+                var clientes = new List<Dto.Cliente>
+                {
+                    new Dto.Cliente() { Name = "Teodoro", Address = "Martin #23", Movil = new Distributor().Movil },
+                    new Dto.Cliente() { Name = "Jose", Address = "FR #15", Movil = new Distributor().Movil + 2 },
+                    new Dto.Cliente() { Name = "Miguel", Address = "Naco #541", Movil = new Distributor().Movil + 3 },
+                    new Dto.Cliente() { Name = "Hector", Address = "J. Duarte #1", Movil = new Distributor().Movil + 4},
+                    new Dto.Cliente() { Name = "Roman", Address = "Medina #3", Movil = new Distributor().Movil + 5},
+                    new Dto.Cliente() { Name = "Maria", Address = "Don Gregorio #68", Movil = new Distributor().Movil + 6 },
+                    new Dto.Cliente() { Name = "Catia", Address = "Juan D. #26", Movil = new Distributor().Movil + 7 },
+                    new Dto.Cliente() { Name = "Miguelina", Address = "Nature #98", Movil = new Distributor().Movil + 8 },
+                    new Dto.Cliente() { Name = "Andreina", Address = "Martin #23", Movil = new Distributor().Movil }
+                };
 
-                var isExecute = new SQLite(path, version).Command(querys, "Cliente", clientes);
+                _logger.Insert.Information($"El Objeto cliente: { JsonSerializer.Serialize(clientes) }");
 
-                Console.WriteLine($"Clientes insertados: {isExecute}");
+                var isExecute = new SQLite().Command(querys, "Cliente", clientes);
+
+                _logger.Insert.Debug($"Clientes insertados: {isExecute}");
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception);
+                _logger.Insert.Error(exception, exception.Message);
             }
         }
 
@@ -116,27 +118,34 @@ namespace DemoDatabase
         {
             try
             {
+                _logger.Insert.Debug("Iniciando Method CreateBathFailed");
+
                 var querys = new Insert();
 
-                var clientes = new List<Dto.Cliente>();
+                _logger.Insert.Debug("Iniciando Lista de Objetos Cliente");
 
-                clientes.Add(new Dto.Cliente() { Name = "Teodoro", Address = "Martin #23", Movil = new Distributor().Movil + 2});
-                clientes.Add(new Dto.Cliente() { Name = "Jose", Address = "FR #15", Movil = new Distributor().Movil + 4});
-                clientes.Add(new Dto.Cliente() { Name = "Miguel", Address = "Naco #541", Movil = new Distributor().Movil + 9});
-                clientes.Add(new Dto.Cliente() { Name = "Hector", Address = "J. Duarte #1", Movil = new Distributor().Movil + 10});
-                clientes.Add(new Dto.Cliente() { Name = "Roman", Address = "Medina #3", Movil = new Distributor().Movil });
-                clientes.Add(new Dto.Cliente() { Name = "Maria", Address = "Don Gregorio #68", Movil = new Distributor().Movil + 15});
-                clientes.Add(new Dto.Cliente() { Name = "Catia", Address = "Juan D. #26", Movil = new Distributor().Movil + 110});
-                clientes.Add(new Dto.Cliente() { Name = "Miguelina", Address = "Nature #98", Movil = new Distributor().Movil + 12});
-                clientes.Add(new Dto.Cliente() { Name = "Andreina", Address = "Martin #23", Movil = new Distributor().Movil + 26});
+                var clientes = new List<Dto.Cliente>
+                {
+                    new Dto.Cliente() { Name = "Teodoro", Address = "Martin #23", Movil = new Distributor().Movil + 2 },
+                    new Dto.Cliente() { Name = "Jose", Address = "FR #15", Movil = new Distributor().Movil + 4 },
+                    new Dto.Cliente() { Name = "Miguel", Address = "Naco #541", Movil = new Distributor().Movil + 9 },
+                    new Dto.Cliente() { Name = "Hector", Address = "J. Duarte #1", Movil = new Distributor().Movil + 10 },
+                    new Dto.Cliente() { Name = "Roman", Address = "Medina #3", Movil = new Distributor().Movil },
+                    new Dto.Cliente() { Name = "Maria", Address = "Don Gregorio #68", Movil = new Distributor().Movil + 15 },
+                    new Dto.Cliente() { Name = "Catia", Address = "Juan D. #26", Movil = new Distributor().Movil + 110 },
+                    new Dto.Cliente() { Name = "Miguelina", Address = "Nature #98", Movil = new Distributor().Movil + 12 },
+                    new Dto.Cliente() { Name = "Andreina", Address = "Martin #23", Movil = new Distributor().Movil + 26 }
+                };
 
-                var isExecute = new SQLite(path, version).Command(querys, "Cliente", clientes);
+                _logger.Insert.Debug($"El Objeto cliente: { JsonSerializer.Serialize(clientes) }");
 
-                Console.WriteLine($"Clientes insertados: {isExecute}");
+                var isExecute = new SQLite().Command(querys, "Cliente", clientes);
+
+                _logger.Insert.Debug($"Clientes insertados: {isExecute}");
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception);
+                _logger.Insert.Error(exception, exception.Message);
             }
         }
 
@@ -146,13 +155,13 @@ namespace DemoDatabase
             {
                 var querys = new Update();
 
-                var isExecute = new SQLite(path, version).Command(querys, 1, "Emmanuel", "C:/2-3b, #321");
+                var isExecute = new SQLite().Command(querys, 1, "Emmanuel", "C:/2-3b, #321");
 
-                Console.WriteLine($"Cliente Actualizado: {isExecute}");
+                _logger.Insert.Debug($"Cliente Actualizado: {isExecute}");
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception);
+                _logger.Insert.Error(exception, exception.Message);
             }
         }
 
@@ -162,13 +171,13 @@ namespace DemoDatabase
             {
                 var querys = new Delete();
 
-                var isExecute = new SQLite(path, version).Command(querys, "Cliente", "NAME", 3);
+                var isExecute = new SQLite().Command(querys, "Cliente", "NAME", 3);
 
-                Console.WriteLine($"Cliente Eliminado: {isExecute}");
+                _logger.Insert.Debug($"Cliente Eliminado: {isExecute}");
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception);
+                _logger.Insert.Error(exception, exception.Message);
             }
         }
     }

@@ -7,7 +7,7 @@
 
         public Connector(string dataSource, int version, string password = null)
         {
-            ConnectionString = (password == null) ?
+            ConnectionString = (string.IsNullOrEmpty(password)) ?
                 connectionString(dataSource, version) :
                 connectionString(dataSource, version, password);
         }

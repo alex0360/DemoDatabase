@@ -8,7 +8,6 @@ namespace DemoDatabase.Infrastructure.Abstracts
 
         public ManagerRequest(string dataSource, int version, string password = null)
         {
-
         }
 
         public ManagerRequest(string dataSource, string dataBase, string user, string password)
