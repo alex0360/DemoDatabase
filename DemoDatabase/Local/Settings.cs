@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Serilog;
 using System;
-using System.IO;
-using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 namespace DemoDatabase.Local
 {
