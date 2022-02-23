@@ -52,7 +52,6 @@ namespace DemoDatabase.Data
 
                 while(records.Read())
                 {
-
                     var temporaryRecord = string.Empty;
 
                     for(int i = 0; i < records.FieldCount; i++)
