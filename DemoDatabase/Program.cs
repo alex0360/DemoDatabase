@@ -4,10 +4,8 @@ using DemoDatabase.Local;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text.Json;
-using System.Windows.Forms;
 using static DemoDatabase.Local.Settings;
 
 namespace DemoDatabase
@@ -72,15 +70,15 @@ namespace DemoDatabase
         {
             int i = 0;
 
-            ClientRepository BD = new ClientRepository();
+            var clientRepository = new ClientRepository();
 
             try
             {
-                BD.LoginInSqlServer("localhost,1433", "BD_VENTAS_020", "SA", "xxxxxx");
+                clientRepository.LoginInSqlServer("localhost,1433", "BD_VENTAS_020", "SA", "xxxxxx");
 
                 var sqlCommand = "select ID_CLIENTE, NOMB_CLIENTE, DIRECCION from CLIENTES WHERE ID_CLIENTE <='100'";
 
-                var rows = BD.GetAll(sqlCommand);
+                var rows = clientRepository.GetAll(sqlCommand);
 
                 if(rows.Length > 0)
                 {
