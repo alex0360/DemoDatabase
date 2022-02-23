@@ -80,7 +80,7 @@ namespace DemoDatabase
 
                 var rows = clientRepository.GetAll(sqlCommand);
 
-                if(rows.Length < 0) return;
+                if(rows.Length < 1) return;
                 
                 foreach(var row in rows)
                 {
