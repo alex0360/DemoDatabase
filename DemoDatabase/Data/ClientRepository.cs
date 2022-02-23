@@ -75,7 +75,10 @@ namespace DemoDatabase.Data
             }
             finally
             {
-                sqlConnection.Close();
+                 if(sqlConnection.State == ConnectionState.Open)
+                {
+                    sqlConnection.Close();
+                }
             }
         }
     }
