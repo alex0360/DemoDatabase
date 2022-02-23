@@ -6,7 +6,7 @@ namespace DemoDatabase.Data
 {
     public class ClientRepository
     {
-        private readonly string UMLAUT = "¨"; //Hex = 00A8; //Dec = 0168; //Entidad = &uml; //Carácter = diéresis
+        private const string UMLAUT = "¨"; //Hex = 00A8; //Dec = 0168; //Entidad = &uml; //Carácter = diéresis
 
         private SqlConnection sqlConnection = null;
 
