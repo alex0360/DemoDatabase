@@ -1,13 +1,15 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Serilog;
 using System;
+using System.IO;
+using System.Reflection;
 
 namespace DemoDatabase.Local
 {
     public class Settings
     {
         public static IConfiguration Configuration => new ConfigurationBuilder()
-                        .SetBasePath("C:\\Users\\edelossantos\\source\\repos\\DemoDatabase\\DemoDatabase\\")
+                        .SetBasePath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location))
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
                         .Build();
