@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using static DemoDatabase.Local.Settings;
+using DemoDatabase.Infrastructure.extensions;
 
 namespace DemoDatabase
 {
@@ -13,15 +14,20 @@ namespace DemoDatabase
     {
         private static readonly Logger _logger = Logger.GetInstance();
 
+        static string palabra = "pálábrá cón tíldés ñalañaoe :.jjañiIDL!@#$%^&*()_+}{|?><";
+        static string regularExpresion = @"[^\w\s.,]+"; // Expresion regular debera ser obtenida desde Base de Datos
+
         static void Main(string[] args)
         {
             _logger.Insert.Information("Iniciando");
 
+            _logger.Insert.Information(palabra.ChangingLettersWithAccents().Strip(regularExpresion));
+
             //Delete();
-            Show(ConsultLinq(numberPage: 1, sizePage: 10));
+            //Show(ConsultLinq(numberPage: 1, sizePage: 10));
 
             //CreateBatchFailed();
-           // CreateBatchSuccessful();
+            // CreateBatchSuccessful();
 
             _logger.Insert.Information("Finalizado");
 

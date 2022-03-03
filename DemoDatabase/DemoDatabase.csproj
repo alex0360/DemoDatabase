@@ -260,7 +260,7 @@
     <Compile Include="Domain\Mediator.cs" />
     <Compile Include="Dto\Cliente.cs" />
     <Compile Include="Infrastructure\Abstracts\ManagerRequest.cs" />
-    <Compile Include="Infrastructure\Abstracts\SingleObject.cs" />
+    <Compile Include="Infrastructure\extensions\StringExtension.cs" />
     <Compile Include="Local\Distributor.cs" />
     <Compile Include="Local\Settings.cs" />
     <Compile Include="Program.cs" />
