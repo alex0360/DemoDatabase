@@ -15,7 +15,8 @@ namespace DemoDatabase
         private static readonly Logger _logger = Logger.GetInstance();
 
         static string palabra = "pálábrá cón tíldés ñalañaoe :.jjañiIDL!@#$%^&*()_+}{|?><";
-        static string regularExpresion = @"[^\w\s.,]+"; // Expresion regular debera ser obtenida desde Base de Datos
+        //static string regularExpresion = @"[^\w\s.,]+"; // Expresion regular debera ser obtenida desde Base de Datos
+        static string regularExpresion = @"[^\w\s.,]+"; // null; // Expresion regular debera ser obtenida desde Base de Datos
 
         static void Main(string[] args)
         {
