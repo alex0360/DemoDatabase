@@ -93,6 +93,7 @@
     <Reference Include="Microsoft.Extensions.Primitives, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.6.0.0\lib\net461\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NewRelic.Api.Agent, Version=9.0.0.0, Culture=neutral, PublicKeyToken=06552fced0b33d87, processorArchitecture=MSIL">
       <HintPath>..\packages\NewRelic.Agent.Api.9.5.1\lib\net45\NewRelic.Api.Agent.dll</HintPath>
     </Reference>
@@ -262,7 +263,8 @@
     <Compile Include="Domain\ManagerRequestSQLite.cs" />
     <Compile Include="Domain\Mediator.cs" />
     <Compile Include="Dto\Cliente.cs" />
-    <Compile Include="Extensions\DateTimeExstension.cs" />
+    <Compile Include="Extensions\DateTimeExtension.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Infrastructure\Abstracts\ManagerRequest.cs" />
     <Compile Include="Infrastructure\extensions\StringExtension.cs" />
     <Compile Include="Local\Distributor.cs" />
