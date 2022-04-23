@@ -3,6 +3,7 @@ using DemoDatabase.Domain;
 using DemoDatabase.Local;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text.Json;
 using static DemoDatabase.Local.Settings;
@@ -22,13 +23,13 @@ namespace DemoDatabase
         {
             _logger.Insert.Information("Iniciando");
 
-            _logger.Insert.Information(palabra.ChangingLettersWithAccents().Strip(regularExpresion));
-
-            //Delete();
+            ////Delete();
             //Show(ConsultLinq(numberPage: 1, sizePage: 10));
 
-            //CreateBatchFailed();
-            // CreateBatchSuccessful();
+            ////CreateBatchFailed();
+            //// CreateBatchSuccessful();
+
+            ConsultClient();
 
             _logger.Insert.Information("Finalizado");
 
@@ -41,12 +42,12 @@ namespace DemoDatabase
             {
                 _logger.Insert.Debug(JsonSerializer.Serialize(clientes));
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 _logger.Insert.Error(exception, exception.Message);
             }
         }
-
+        
         static IEnumerable<Dto.Cliente> ConsultNoLinq()
         {
             Select querys = new Select();
@@ -56,7 +57,7 @@ namespace DemoDatabase
 
         static IEnumerable<Dto.Cliente> ConsultLinq(string subQuery = null, int numberPage = 1, int sizePage = 10)
         {
-            if (subQuery != null) subQuery = subQuery.ToLower();
+            if(subQuery != null) subQuery = subQuery.ToLower();
 
             Select querys = new Select();
 
@@ -70,6 +71,38 @@ namespace DemoDatabase
                          .Take((numberPage * sizePage) - ((numberPage - 1) * sizePage));
         }
 
+        static void ConsultClient()
+        {
+            int i = 0;
+
+            var clientRepository = new ClientRepository();
+
+            try
+            {
+                clientRepository.LoginInSqlServer("localhost,1433", "BD_VENTAS_020", "SA", "xxxxxx");
+
+                var sqlCommand = "select ID_CLIENTE, NOMB_CLIENTE, DIRECCION from CLIENTES WHERE ID_CLIENTE <='100'";
+
+                var rows = clientRepository.GetAll(sqlCommand);
+
+                if(rows.Length < 1) return;
+                
+                foreach(var row in rows)
+                {
+                    Console.WriteLine(row.ToString());
+
+                    //MessageBox.Show(row, "Registro: " + i + 1, MessageBoxButtons.OK);
+
+                    _logger.Insert.Debug(JsonSerializer.Serialize(row));
+                }
+                
+            }
+            catch(Exception exception)
+            {
+                _logger.Insert.Error(exception, exception.Message);
+            }
+        }
+
         static void Create()
         {
             try
@@ -80,7 +113,7 @@ namespace DemoDatabase
 
                 _logger.Insert.Debug($"Cliente insertado: {isExecute}");
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 _logger.Insert.Error(exception, exception.Message);
             }
@@ -115,7 +148,7 @@ namespace DemoDatabase
 
                 _logger.Insert.Debug($"Clientes insertados: {isExecute}");
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 _logger.Insert.Error(exception, exception.Message);
             }
@@ -150,7 +183,7 @@ namespace DemoDatabase
 
                 _logger.Insert.Debug($"Clientes insertados: {isExecute}");
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 _logger.Insert.Error(exception, exception.Message);
             }
@@ -166,7 +199,7 @@ namespace DemoDatabase
 
                 _logger.Insert.Debug($"Cliente Actualizado: {isExecute}");
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 _logger.Insert.Error(exception, exception.Message);
             }
@@ -182,7 +215,7 @@ namespace DemoDatabase
 
                 _logger.Insert.Debug($"Cliente Eliminado: {isExecute}");
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 _logger.Insert.Error(exception, exception.Message);
             }
