@@ -262,6 +262,7 @@
     <Compile Include="Domain\ManagerRequestSQLite.cs" />
     <Compile Include="Domain\Mediator.cs" />
     <Compile Include="Dto\Cliente.cs" />
+    <Compile Include="Extensions\DateTimeExstension.cs" />
     <Compile Include="Infrastructure\Abstracts\ManagerRequest.cs" />
     <Compile Include="Infrastructure\Abstracts\SingleObject.cs" />
     <Compile Include="Local\Distributor.cs" />
@@ -277,7 +278,9 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Resources\pruebaDB.db" />
+    <Content Include="Resources\pruebaDB.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
