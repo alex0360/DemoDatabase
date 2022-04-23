@@ -80,17 +80,17 @@ namespace DemoDatabase
 
                 var rows = clientRepository.GetAll(sqlCommand);
 
-                if(rows.Length > 0)
+                if(rows.Length < 1) return;
+                
+                foreach(var row in rows)
                 {
-                    foreach(var row in rows)
-                    {
-                        Console.WriteLine(row.ToString());
+                    Console.WriteLine(row.ToString());
 
-                        //MessageBox.Show(row, "Registro: " + i + 1, MessageBoxButtons.OK);
+                    //MessageBox.Show(row, "Registro: " + i + 1, MessageBoxButtons.OK);
 
-                        _logger.Insert.Debug(JsonSerializer.Serialize(row));
-                    }
+                    _logger.Insert.Debug(JsonSerializer.Serialize(row));
                 }
+                
             }
             catch(Exception exception)
             {
