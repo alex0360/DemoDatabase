@@ -15,11 +15,13 @@ namespace DemoDatabase
     {
         private static readonly Logger _logger = Logger.GetInstance();
 
-        static DateTime dateTime = DateTime.Now.AddMonths(-13).AddDays(-3).AddHours(-25).AddMinutes(-3).AddSeconds(-12);
+        static DateTime dateTime = DateTime.Now.AddSeconds(12);
 
         static void Main(string[] args)
         {
             _logger.Insert.Information("Iniciando");
+
+            _logger.Insert.Information(dateTime.ToString());
 
             _logger.Insert.Information($"En {dateTime.RealTimeUntilNow(2)}");
 
