@@ -1,5 +1,6 @@
 ﻿using DemoDatabase.Data;
 using DemoDatabase.Domain;
+using DemoDatabase.Extensions;
 using DemoDatabase.Local;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,6 @@ using System.Data;
 using System.Linq;
 using System.Text.Json;
 using static DemoDatabase.Local.Settings;
-using DemoDatabase.Infrastructure.extensions;
 
 namespace DemoDatabase
 {
@@ -15,15 +15,13 @@ namespace DemoDatabase
     {
         private static readonly Logger _logger = Logger.GetInstance();
 
-        static string palabra = "pálábrá cón tíldés ñalañaoe :.jjañiIDL!@#$%^&*()_+}{|?><";
-        //static string regularExpresion = @"[^\w\s.,]+"; // Expresion regular debera ser obtenida desde Base de Datos
-        static string regularExpresion = @"[^\w\s.,]+"; // null; // Expresion regular debera ser obtenida desde Base de Datos
+        static DateTime dateTime = DateTime.Now.AddHours(-2).AddMinutes(-3);
 
         static void Main(string[] args)
         {
             _logger.Insert.Information("Iniciando");
 
-            Show(ConsultLinq(numberPage: 1, sizePage: 10));
+            _logger.Insert.Information(dateTime.ElapsedTime());
 
             _logger.Insert.Information("Finalizado");
 
