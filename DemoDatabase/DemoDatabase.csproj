@@ -274,6 +274,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Content Include="Resources\logs.db" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

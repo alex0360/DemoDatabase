@@ -59,5 +59,15 @@ namespace DemoDatabase {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Byte[].
+        /// </summary>
+        internal static byte[] logs {
+            get {
+                object obj = ResourceManager.GetObject("logs", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

@@ -23,13 +23,7 @@ namespace DemoDatabase
         {
             _logger.Insert.Information("Iniciando");
 
-            ////Delete();
-            //Show(ConsultLinq(numberPage: 1, sizePage: 10));
-
-            ////CreateBatchFailed();
-            //// CreateBatchSuccessful();
-
-            ConsultClient();
+            Show(ConsultLinq(numberPage: 1, sizePage: 10));
 
             _logger.Insert.Information("Finalizado");
 
