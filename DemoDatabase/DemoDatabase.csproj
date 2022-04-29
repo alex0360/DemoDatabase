@@ -259,10 +259,13 @@
     <Compile Include="Data\Update.cs" />
     <Compile Include="Data\Insert.cs" />
     <Compile Include="Data\Select.cs" />
+    <Compile Include="Domain\Classes\DateRange.cs" />
     <Compile Include="Domain\ManagerRequestSqlServer.cs" />
     <Compile Include="Domain\ManagerRequestSQLite.cs" />
     <Compile Include="Domain\Mediator.cs" />
+    <Compile Include="Domain\Message\Warnings.cs" />
     <Compile Include="Dto\Cliente.cs" />
+    <Compile Include="Enumerations\DateInterval.cs" />
     <Compile Include="Extensions\DateTimeExtension.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Infrastructure\Abstracts\ManagerRequest.cs" />

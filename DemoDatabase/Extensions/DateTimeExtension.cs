@@ -50,8 +50,8 @@ namespace DemoDatabase.Extensions
             var dateTimeNow = DateTime.Now;
             var daysInBaseMonth = DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
 
-            year = dateTimeNow.Year - dateTime.Year;
-            month = dateTimeNow.Month - dateTime.Month;
+            year = dateTime.Year - dateTimeNow.Year;
+            month = dateTime.Month - dateTimeNow.Month;
 
             if(month < 0)
             {
