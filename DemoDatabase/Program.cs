@@ -19,7 +19,7 @@ namespace DemoDatabase
 
         static void Main(string[] args)
         {
-              _logger.Insert.Information("Iniciando");
+            _logger.Insert.Information("Iniciando");
 
             _logger.Insert.Information(dateTime.ToString());
 
@@ -67,8 +67,6 @@ namespace DemoDatabase
 
         static void ConsultClient()
         {
-            int i = 0;
-
             var clientRepository = new ClientRepository();
 
             try
@@ -84,8 +82,6 @@ namespace DemoDatabase
                 foreach(var row in rows)
                 {
                     Console.WriteLine(row.ToString());
-
-                    //MessageBox.Show(row, "Registro: " + i + 1, MessageBoxButtons.OK);
 
                     _logger.Insert.Debug(JsonSerializer.Serialize(row));
                 }
