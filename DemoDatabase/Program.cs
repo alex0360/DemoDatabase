@@ -19,7 +19,7 @@ namespace DemoDatabase
 
         static void Main(string[] args)
         {
-            _logger.Insert.Information("Iniciando");
+              _logger.Insert.Information("Iniciando");
 
             _logger.Insert.Information(dateTime.ToString());
 

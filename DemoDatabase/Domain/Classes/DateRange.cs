@@ -13,15 +13,13 @@ namespace DemoDatabase.Domain.Classes
 
         public DateRange(DateTime date)
         {
-            this.StartDate = date;
-            this.EndDate = date;
-
+            StartDate = date;
+            EndDate = date;
         }
 
         public DateRange(DateTime startDate, DateTime endDate)
         {
-            // TODO: End Date must be greater or equal than Start Date.
-            if(startDate > endDate)
+            if (startDate > endDate)
             {
                 throw new FormatException(Warnings.InvalidDateRange(startDate, endDate));
             }
@@ -30,8 +28,6 @@ namespace DemoDatabase.Domain.Classes
                 StartDate = startDate;
                 EndDate = endDate;
             }
-
-
         }
 
         public DateRange(string startDate, string endDate, string expectedFormat = "yyyy-MM-dd")
@@ -48,18 +44,17 @@ namespace DemoDatabase.Domain.Classes
                 "yy-MM-dd"
             };
 
-            if(!DateTime.TryParseExact(startDate, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime convertedStartDate))
+            if (!DateTime.TryParseExact(startDate, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime convertedStartDate))
             {
                 throw new FormatException(Warnings.ParameterFormatInvalid("La fecha", expectedFormat));
             }
 
-            if(!DateTime.TryParseExact(endDate, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime convertedEndDate))
+            if (!DateTime.TryParseExact(endDate, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime convertedEndDate))
             {
                 throw new FormatException(Warnings.ParameterFormatInvalid("La fecha", expectedFormat));
             }
 
-
-            if(convertedStartDate > convertedEndDate)
+            if (convertedStartDate > convertedEndDate)
             {
                 Warnings.InvalidDateRange(convertedStartDate, convertedEndDate);
             }
@@ -81,45 +76,36 @@ namespace DemoDatabase.Domain.Classes
                 "yyMMdd",
                 "yy-MM-dd"
             };
-            if(!DateTime.TryParseExact(date, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime convertedDate))
+
+            if (!DateTime.TryParseExact(date, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime convertedDate))
             {
                 throw new FormatException(Warnings.ParameterFormatInvalid("La fecha", expectedFormat));
             }
 
             StartDate = convertedDate;
             EndDate = convertedDate;
-
         }
 
-        public IEnumerable<DateTime> Iterate()
+        public IEnumerable<DateTime> Iterate(DateInterval dateInterval = DateInterval.Daily)
         {
-            for(var date = StartDate.Date; date < EndDate.Date; date = date.AddDays(1))
+            for (var day = StartDate.Date; day <= EndDate.Date; day = day.AddDays(1))
             {
-                yield return date;
-            }
-        }
-
-        public IEnumerable<DateTime> Iterate(DateInterval dateInterval)
-        {
-
-            for(var day = StartDate.Date; day <= EndDate.Date; day = day.AddDays(1))
-            {
-                switch(dateInterval)
+                switch (dateInterval)
                 {
                     case DateInterval.Daily:
 
                         yield return day;
 
-                    break;
+                        break;
 
                     case DateInterval.EndOfMonth:
 
-                        if(day.Day.Equals(new DateTime(EndDate.Year, EndDate.Month, 1).AddMonths(1).AddDays(-1).Day))
+                        if (day.Day.Equals(new DateTime(EndDate.Year, EndDate.Month, 1).AddMonths(1).AddDays(-1).Day))
                         {
                             yield return day;
                         }
 
-                    break;
+                        break;
                 }
             }
         }

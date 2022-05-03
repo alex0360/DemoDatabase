@@ -319,4 +319,7 @@
   </ProjectExtensions>
   <Import Project="..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" />
   <Import Project="..\packages\System.Text.Json.6.0.2\build\System.Text.Json.targets" Condition="Exists('..\packages\System.Text.Json.6.0.2\build\System.Text.Json.targets')" />
+  <PropertyGroup>
+    <PreBuildEvent>if $(ConfigurationName) == Debug node $(SolutionDir)scripts/init.js</PreBuildEvent>
+  </PropertyGroup>
 </Project>
