@@ -283,15 +283,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include=".editorconfig">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>1.txt</LastGenOutput>
-    </None>
-    <Content Include="1.txt">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>.editorconfig</DependentUpon>
-    </Content>
     <Content Include="Resources\logs.db" />
   </ItemGroup>
   <ItemGroup>
