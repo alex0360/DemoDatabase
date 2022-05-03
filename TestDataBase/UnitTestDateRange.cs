@@ -1,7 +1,6 @@
 ﻿using DemoDatabase.Domain.Classes;
 using DemoDatabase.Enumerations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -75,7 +74,8 @@ namespace TestDataBase
             var dateTimes = new List<DateTime>
             {
                 new DateTime(2022, 04, 05),
-                new DateTime(2022, 04, 06)
+                new DateTime(2022, 04, 06),
+                new DateTime(2022, 04, 07)
             };
 
             var dateRange = new DateRange(startDate, endDate);

@@ -15,7 +15,7 @@ namespace DemoDatabase
     {
         private static readonly Logger _logger = Logger.GetInstance();
 
-        static DateTime dateTime = Convert.ToDateTime("2023-02-09T01:00:50");
+        private static readonly DateTime dateTime = Convert.ToDateTime("2023-02-09T01:00:50");
 
         static void Main(string[] args)
         {
