@@ -12,9 +12,4 @@ dotnet-format -v diag -f
 
 # Add back the modified files to staging
 echo "$GITFILES" |  git add .
-
-commandBuild="dotnet build --configuration Debug"
-
-exec "$commandBuild"
-
 exit 0
