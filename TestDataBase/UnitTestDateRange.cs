@@ -45,17 +45,6 @@ namespace TestDataBase
         }
 
         [TestMethod]
-        public void TestIterate()
-        {
-            var startDate = new DateTime(2014, 12, 25);
-            var endDate = new DateTime(2018, 8, 13);
-
-            var date = new DateRange(startDate, endDate);
-
-            var x = date.Iterate().GetEnumerator();
-        }
-
-        [TestMethod]
         public void TestDateFormatContructor()
         {
             var date = "201905";
@@ -75,14 +64,13 @@ namespace TestDataBase
             var dateTimes = new List<DateTime>
             {
                 new DateTime(2022, 04, 05),
-                new DateTime(2022, 04, 06)
+                new DateTime(2022, 04, 06),
+                new DateTime(2022, 04, 07)
             };
 
             var dateRange = new DateRange(startDate, endDate);
 
             var date = dateRange.Iterate().ToList();
-
-            var result = string.Join(", ", date);
 
             Assert.AreEqual(dateTimes, date);
         }

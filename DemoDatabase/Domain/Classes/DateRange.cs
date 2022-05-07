@@ -15,12 +15,10 @@ namespace DemoDatabase.Domain.Classes
         {
             this.StartDate = date;
             this.EndDate = date;
-
         }
 
         public DateRange(DateTime startDate, DateTime endDate)
         {
-            // TODO: End Date must be greater or equal than Start Date.
             if(startDate > endDate)
             {
                 throw new FormatException(Warnings.InvalidDateRange(startDate, endDate));
@@ -30,8 +28,6 @@ namespace DemoDatabase.Domain.Classes
                 StartDate = startDate;
                 EndDate = endDate;
             }
-
-
         }
 
         public DateRange(string startDate, string endDate, string expectedFormat = "yyyy-MM-dd")
@@ -58,7 +54,6 @@ namespace DemoDatabase.Domain.Classes
                 throw new FormatException(Warnings.ParameterFormatInvalid("La fecha", expectedFormat));
             }
 
-
             if(convertedStartDate > convertedEndDate)
             {
                 Warnings.InvalidDateRange(convertedStartDate, convertedEndDate);
@@ -81,6 +76,7 @@ namespace DemoDatabase.Domain.Classes
                 "yyMMdd",
                 "yy-MM-dd"
             };
+
             if(!DateTime.TryParseExact(date, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime convertedDate))
             {
                 throw new FormatException(Warnings.ParameterFormatInvalid("La fecha", expectedFormat));
@@ -88,20 +84,10 @@ namespace DemoDatabase.Domain.Classes
 
             StartDate = convertedDate;
             EndDate = convertedDate;
-
         }
 
-        public IEnumerable<DateTime> Iterate()
+        public IEnumerable<DateTime> Iterate(DateInterval dateInterval = DateInterval.Daily)
         {
-            for(var date = StartDate.Date; date < EndDate.Date; date = date.AddDays(1))
-            {
-                yield return date;
-            }
-        }
-
-        public IEnumerable<DateTime> Iterate(DateInterval dateInterval)
-        {
-
             for(var day = StartDate.Date; day <= EndDate.Date; day = day.AddDays(1))
             {
                 switch(dateInterval)
