@@ -13,21 +13,22 @@ namespace DemoDatabase.Domain.Classes
 
         public DateRange(DateTime date)
         {
-            this.StartDate = date;
-            this.EndDate = date;
+            StartDate = date;
+            EndDate = date;
         }
 
         public DateRange(DateTime startDate, DateTime endDate)
         {
             if(startDate > endDate)
-            {
-                throw new FormatException(Warnings.InvalidDateRange(startDate, endDate));
-            }
-            else
-            {
-                StartDate = startDate;
-                EndDate = endDate;
-            }
+                if(startDate > endDate)
+                {
+                    throw new FormatException(Warnings.InvalidDateRange(startDate, endDate));
+                }
+                else
+                {
+                    StartDate = startDate;
+                    EndDate = endDate;
+                }
         }
 
         public DateRange(string startDate, string endDate, string expectedFormat = "yyyy-MM-dd")
@@ -53,7 +54,6 @@ namespace DemoDatabase.Domain.Classes
             {
                 throw new FormatException(Warnings.ParameterFormatInvalid("La fecha", expectedFormat));
             }
-
             if(convertedStartDate > convertedEndDate)
             {
                 Warnings.InvalidDateRange(convertedStartDate, convertedEndDate);
@@ -81,9 +81,6 @@ namespace DemoDatabase.Domain.Classes
             {
                 throw new FormatException(Warnings.ParameterFormatInvalid("La fecha", expectedFormat));
             }
-
-            StartDate = convertedDate;
-            EndDate = convertedDate;
         }
 
         public IEnumerable<DateTime> Iterate(DateInterval dateInterval = DateInterval.Daily)
@@ -94,16 +91,16 @@ namespace DemoDatabase.Domain.Classes
                 {
                     case DateInterval.Daily:
 
-                        yield return day;
+                    yield return day;
 
                     break;
 
                     case DateInterval.EndOfMonth:
 
-                        if(day.Day.Equals(new DateTime(EndDate.Year, EndDate.Month, 1).AddMonths(1).AddDays(-1).Day))
-                        {
-                            yield return day;
-                        }
+                    if(day.Day.Equals(new DateTime(EndDate.Year, EndDate.Month, 1).AddMonths(1).AddDays(-1).Day))
+                    {
+                        yield return day;
+                    }
 
                     break;
                 }

@@ -15,7 +15,7 @@ namespace DemoDatabase
     {
         private static readonly Logger _logger = Logger.GetInstance();
 
-        static DateTime dateTime = Convert.ToDateTime("2023-02-09T01:00:50");
+        private static readonly DateTime dateTime = Convert.ToDateTime("2023-02-09T01:00:50");
 
         static void Main(string[] args)
         {
@@ -34,14 +34,14 @@ namespace DemoDatabase
         {
             try
             {
-                _logger.Insert.Debug(JsonSerializer.Serialize(clientes));
+                                            _logger.Insert.Debug(JsonSerializer.Serialize(clientes));
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 _logger.Insert.Error(exception, exception.Message);
             }
         }
-        
+
         static IEnumerable<Dto.Cliente> ConsultNoLinq()
         {
             Select querys = new Select();
@@ -51,7 +51,7 @@ namespace DemoDatabase
 
         static IEnumerable<Dto.Cliente> ConsultLinq(string subQuery = null, int numberPage = 1, int sizePage = 10)
         {
-            if(subQuery != null) subQuery = subQuery.ToLower();
+            if (subQuery != null) subQuery = subQuery.ToLower();
 
             Select querys = new Select();
 
@@ -67,8 +67,6 @@ namespace DemoDatabase
 
         static void ConsultClient()
         {
-            int i = 0;
-
             var clientRepository = new ClientRepository();
 
             try
@@ -79,19 +77,17 @@ namespace DemoDatabase
 
                 var rows = clientRepository.GetAll(sqlCommand);
 
-                if(rows.Length < 1) return;
-                
-                foreach(var row in rows)
+                if (rows.Length < 1) return;
+
+                foreach (var row in rows)
                 {
                     Console.WriteLine(row.ToString());
 
-                    //MessageBox.Show(row, "Registro: " + i + 1, MessageBoxButtons.OK);
-
                     _logger.Insert.Debug(JsonSerializer.Serialize(row));
                 }
-                
+
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 _logger.Insert.Error(exception, exception.Message);
             }
@@ -107,7 +103,7 @@ namespace DemoDatabase
 
                 _logger.Insert.Debug($"Cliente insertado: {isExecute}");
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 _logger.Insert.Error(exception, exception.Message);
             }
@@ -142,7 +138,7 @@ namespace DemoDatabase
 
                 _logger.Insert.Debug($"Clientes insertados: {isExecute}");
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 _logger.Insert.Error(exception, exception.Message);
             }
@@ -177,7 +173,7 @@ namespace DemoDatabase
 
                 _logger.Insert.Debug($"Clientes insertados: {isExecute}");
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 _logger.Insert.Error(exception, exception.Message);
             }
@@ -193,7 +189,7 @@ namespace DemoDatabase
 
                 _logger.Insert.Debug($"Cliente Actualizado: {isExecute}");
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 _logger.Insert.Error(exception, exception.Message);
             }
@@ -209,7 +205,7 @@ namespace DemoDatabase
 
                 _logger.Insert.Debug($"Cliente Eliminado: {isExecute}");
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 _logger.Insert.Error(exception, exception.Message);
             }

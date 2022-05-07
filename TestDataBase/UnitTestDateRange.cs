@@ -1,7 +1,6 @@
 ﻿using DemoDatabase.Domain.Classes;
 using DemoDatabase.Enumerations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
