@@ -8,43 +8,38 @@ namespace DemoDatabase.Local
 {
     public class Settings
     {
-        public static IConfiguration Configuration => new ConfigurationBuilder()
-                        .SetBasePath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location))
+        public static IConfiguration Configuration { get; private set; }
+
+        private static IConfiguration GetConfiguration()
+        {
+            return new ConfigurationBuilder()
+                        .SetBasePath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
                         .Build();
-
-        public static class Parameterize
-        {
-            public static string Path => Configuration.GetValue<string>("connection:sqlite:path");
-            public static int Version => Configuration.GetValue<int>("connection:sqlite:version");
-            public static string PasswordLite => Configuration.GetValue<string>("connection:sqlite:password");
-            public static string DataSource => Configuration.GetValue<string>("connection:sqlserver:dataSource");
-            public static string DataBase => Configuration.GetValue<string>("connection:sqlserver:dataBase");
-            public static string UserId => Configuration.GetValue<string>("connection:sqlserver:userId");
-            public static string PasswordServer => Configuration.GetValue<string>("connection:sqlserver:password");
         }
 
         public class Logger
         {
             private static Logger _instance = null;
             private static readonly Object _mutex = new Object();
+
             public ILogger Insert { get; private set; }
 
-            private Logger()
+            private Logger(IConfiguration configuration)
             {
-                Insert = GetLogger();
-
+                Insert = GetLogger(configuration);
             }
 
-            private static ILogger GetLogger()
+            private static ILogger GetLogger(IConfiguration configuration)
             {
                 try
                 {
+                    Configuration = configuration ?? GetConfiguration();
+
                     return new LoggerConfiguration()
                         .ReadFrom.Configuration(Configuration)
                         .CreateLogger();
-
                 }
                 catch (Exception exception)
                 {
@@ -52,13 +47,13 @@ namespace DemoDatabase.Local
                 }
             }
 
-            public static Logger GetInstance()
+            public static Logger GetInstance(IConfiguration configuration = null)
             {
                 if (_instance == null)
                 {
                     lock (_mutex)
                     {
-                        _instance = new Logger();
+                        _instance = new Logger(configuration);
                     }
                 }
 

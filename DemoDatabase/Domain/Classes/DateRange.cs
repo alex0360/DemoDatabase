@@ -80,6 +80,9 @@ namespace DemoDatabase.Domain.Classes
             {
                 throw new FormatException(Warnings.ParameterFormatInvalid("La fecha", expectedFormat));
             }
+
+            StartDate = convertedDate;
+            EndDate = convertedDate;
         }
 
         public IEnumerable<DateTime> Iterate(DateInterval dateInterval = DateInterval.Daily)

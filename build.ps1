@@ -1,6 +1,6 @@
 # --------------------------------------------------------------------------------------------------------------------
 # <copyright file="build.ps1" company="Tygertec">
-#   Copyright Â© 2016 Ty Walls.
+#   Copyright © 2016 Ty Walls.
 #   All rights reserved.
 # </copyright>
 # <summary>

@@ -1,6 +1,6 @@
 ﻿using DemoDatabase.Data;
+using DemoDatabase.Local;
 using System.Collections.Generic;
-using static DemoDatabase.Local.Settings;
 
 namespace DemoDatabase.Domain
 {
