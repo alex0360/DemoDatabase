@@ -19,7 +19,6 @@ namespace DemoDatabase.Domain.Classes
 
         public DateRange(DateTime startDate, DateTime endDate)
         {
-            if(startDate > endDate)
                 if(startDate > endDate)
                 {
                     throw new FormatException(Warnings.InvalidDateRange(startDate, endDate));
