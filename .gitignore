@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /.build
 /Resources/log.txt
 /scripts/command/build/Resources
+/nuget.exe
