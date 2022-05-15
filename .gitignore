@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/.build
+/Resources/log.txt
+/scripts/command/build/Resources

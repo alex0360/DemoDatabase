@@ -3,7 +3,7 @@ using System.Text;
 
 namespace DemoDatabase.Extensions
 {
-    internal static class DateTimeExtension
+    public static class DateTimeExtension
     {
         private static int year;
         private static int month;

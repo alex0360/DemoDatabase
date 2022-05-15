@@ -1,23 +1,15 @@
-# --------------------------------------------------------------------------------------------------------------------
-# <copyright file="build.ps1" company="Tygertec">
-#   Copyright © 2016 Ty Walls.
-#   All rights reserved.
-# </copyright>
-# <summary>
-#   Script for kicking off the command line build.
-# </summary>
-# --------------------------------------------------------------------------------------------------------------------
-
 param([Parameter(Position=0, Mandatory=$false)] [string[]]$taskList=@())
 
 # Get path base
 $solutionDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 
+$projectDirectory = Join-Path $solutionDirectory "TestDataBase"
+
 $nugetDirectory = Join-Path $solutionDirectory ".nuget"
 $packageDirectory = Join-Path $solutionDirectory "packages"
 
 # Make sure we have a version of the nuget executable
-$nuget = Get-Command NuGet -ErrorAction SilentlyContinue
+$nuget = Get-Command NuGet -ErrorAction SilentlyContinue | Select-Object -Last 1
 
 if ($nuget -eq $null) {    
 	$nuget = ".\nuget.exe"
@@ -36,15 +28,30 @@ $psake_path = (Get-ChildItem $solutionDirectory\packages\psake.* | Sort-Object N
 
 Import-Module $psake_path\tools\psake\psake.psm1
 
-Invoke-psake `
+$invoke = Invoke-psake `
 	-buildFile $solutionDirectory\scripts\command\build\default.ps1 `
 	-taskList $taskList `
-	-framework 4.7.2 `
-	-properties @{
-		"buildConfiguration" = "Release"
-		"buildPlatform" = "Any CPU"} `
 	-parameters @{ 
-		"solutionFile" = ".\DemoDatabase.sln"}
+		"solutionFile" = $(Get-ChildItem -Path $solutionDirectory -Filter *.sln | Select -First 1).FullName
+        "testProject" = "TestDataBase"
+        "buildConfiguration" = "Release"
+        "net" = "net472"
+        "buildPlatform" = "Any CPU"}
+
+
+$result = $invoke | ConvertTo-Json
+
+$isFail = $result.ToString() -match '[E|e](rror|xception)'
+
+if ($isFail)
+{
+    $LASTEXITCODE = 1
+
+    Write-Output ("`r`nMessage: {0}" -f $result.ToString())
+
+    exit $LASTEXITCODE
+}
 
 Write-Output ("`r`nBuild finished with code: {0}" -f $LASTEXITCODE)
+
 exit $LASTEXITCODE

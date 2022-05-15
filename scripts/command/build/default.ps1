@@ -1,13 +1,3 @@
-# --------------------------------------------------------------------------------------------------------------------
-# <copyright file="default.ps1" company="Tygertec">
-#   Copyright © 2016 Ty Walls.
-#   All rights reserved.
-# </copyright>
-# <summary>
-#   Psake build script.
-# </summary>
-# --------------------------------------------------------------------------------------------------------------------
-
 Include .\psake_helpers.ps1
 
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -17,59 +7,30 @@ $solutionDirectory = Split-Path -Parent $solutionDirectory
 $solutionDirectory = Split-Path -Parent $solutionDirectory
 
 properties {
-	$solutionFile = $(Get-ChildItem -Path $solutionDirectory -Filter *.sln | Select -First 1).FullName
 
-	$outputDirectory = Join-Path $solutionDirectory ".build"
-	$buildProjectDirectory = Join-Path $SolutionDirectory "TW.Resfit.Build"
+    $outputDirectory = Join-Path $solutionDirectory ".build"
+    
+    #$nunit = Join-Path $(Find-PackagePath $packageDirectory "NUnit.ConsoleRunner") "Tools\nunit3-console.exe"
 
-	$buildConfiguration = "Release"
-	$buildPlatform = "Any CPU"
+    $nunit = Join-Path $(Find-PackagePath $packageDirectory "NUnit.ConsoleRunner") "Tools\nunit3-console.exe"
 
-	$packageDirectory = Join-Path $solutionDirectory "packages"
-
-	$testResultsDirectory = Join-Path $outputDirectory "TestResults"
-	$nunit = Join-Path $(Find-PackagePath $packageDirectory "Nunit.Console") "Tools\nunit3-console.exe"
-
-	$openCover = Join-Path $(Find-PackagePath $packageDirectory "OpenCover") "tools\OpenCover.Console.exe"
-	$testCoverageDirectory = Join-Path $outputDirectory "TestCoverage"
-	$testCoverageReportPath = Join-Path $testCoverageDirectory "OpenCoverReport.xml"
-	$testCoverageFilter = Quote-String("+[*]* -[*.Tests]* -[*.Requirements]*")
-	$testCoverageExclusionAttribute = "System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute"
-	$testCoverageExcludeFiles = "*\*Designer.cs;*\*.g.cs;*.g.i.cs"
-
-	$reportGenerator = Join-Path $(Find-PackagePath $packageDirectory "ReportGenerator") "tools\ReportGenerator.exe"
-
-	$pester = Join-Path $(Find-PackagePath $packageDirectory "Pester") "tools\bin\pester.bat"
-
-	$7zip = Join-Path $(Find-PackagePath $packageDirectory "7-Zip.CommandLine") "tools\7za.exe"
-	$releaseDirectory = Join-Path $outputDirectory "Release"
-
-	$nuget = Join-Path $(Find-PackagePath $packageDirectory "NuGet.CommandLine") "tools\NuGet.exe"
-	$coreNuspec = Join-Path $buildProjectDirectory "TW.Resfit.Core.nuspec"
-
-	$coveralls = Join-Path $(Find-PackagePath $packageDirectory "coveralls.io") "tools\coveralls.net.exe"
-
-	$version = $null
-
-	$git = Get-Command git -ErrorAction SilentlyContinue | Select-Object -First 1
+	$git = Get-Command git -ErrorAction SilentlyContinue | Select-Object -Last 1
 }
-
-Framework "4.7.2"
 
 FormatTaskName ">>>-- Executing {0} Task -->"
 
 Task ? -description "List tasks" -alias "Help" { WriteDocumentation }
 
-Task Default -depends Package -description "Default task"
+Task Default -depends BuildAndRunAllTests -description "Default task"
 
 Task BuildAndRunAllTests `
 	-alias "BakeAndShake" `
 	-description "Build solution and run all tests" `
-	-depends Build, Tests
+	-depends Unit.Tests
 
 Task Check-Environment `
 	-description "Verify parameters and build tools" `
-	-requiredVariables $outputDirectory, $testResultsDirectory, $solutionFile, $testCoverageDirectory, $coreNuspec `
+	-requiredVariables $solutionFile, $buildConfiguration, $buildPlatform, $outputDirectory `
 {
 	Assert ("Debug", "Release" -contains $buildConfiguration) `
 		"Invalid build configuration '$buildConfiguration'. Valid values are 'Debug' or 'Release'"
@@ -80,203 +41,48 @@ Task Check-Environment `
 	Assert (Test-Path $nunit) `
 		"NUnit console test runner could not be found"
 
-	Assert (Test-Path $openCover) `
-		"OpenCover console could not be found"
-
-	Assert (Test-Path $reportGenerator) `
-		"ReportGenerator console could not be found"
-
-	Assert (Test-Path $7zip) `
-		"7-Zip console could not be found"
-
-	Assert (Test-Path $nuget) `
-		"NuGet CommandLine could not be found"
-
-	Assert (Test-Path $pester) `
-		"Pester.bat could not be found"
-
-	Assert ($coveralls -ne $null) `
-		"Coveralls could not be found"
-
-	Assert ($git -ne $null) `
+    Assert ($git -ne $null) `
 		"Git is not in your command path. Install Git."
 }
 
-Task Clean `
-	-description "Clean up build cruft and initialize build directory structure" `
-	-depends Check-Environment `
-{
-	New-Directory $outputDirectory
-	Remove-Contents $outputDirectory
+formatTaskName { 
+    param($taskName) 
 
-	Remove-Directory -Path $testResultsDirectory
-	New-Directory $testResultsDirectory
-
-	Remove-Directory -Path $testCoverageDirectory
-	New-Directory $testCoverageDirectory
-
-	Remove-Directory $releaseDirectory
-	New-Directory $releaseDirectory
+    $divider = "-" * 70
+    return "`r`n$divider`r`n$taskName`r`n$divider"
 }
 
-Task Build `
-	-description "Build them... Build them all." `
-	-depends Clean, Version `
-{
-	Exec {
-		msbuild $solutionFile /verbosity:quiet /maxcpucount "/property:Configuration=$buildConfiguration;Platform=$buildPlatform;OutDir=$outputDirectory"
-	}
+Task Requires.MSBuild {
+
+    $script:build = resolve-path "C:\Program Files (x86)\Microsoft Visual Studio\*\*\MSBuild\*\Bin\MSBuild.exe" | Select-Object -Last 1
+
+    if ($build -eq $null)
+    {
+        throw "Failed to find MSBuild"
+    }
+
+    Write-Host "Found MSBuild here: $build"
 }
 
-Task Tests `
-	-description "Run all tests and generate code coverage report" `
-	-depends UnitTests, AcceptanceTests, PesterTests `
-{
-	Write-Output "Generating test coverage report"
-
-	if (Test-Path $testCoverageReportPath) {
-		Exec { & $reportGenerator $testCoverageReportPath $testCoverageDirectory }
-
-		if ($env:APPVEYOR) {
-			# Tell Coveralls about the report
-			& $coveralls --opencover $testCoverageReportPath
-		}
-	}
-	else {
-		Write-Output "OpenCover results not found at ($testCoverageReportPath)"
-	}
+Task Requires.BuildDir {
+    if (!(test-path $outputDirectory))
+    {
+        Write-Host "Creating build folder $outputDirectory"
+        mkdir $outputDirectory > $null
+    }
+    else {
+        Write-Host "Build folder is: $outputDirectory"
+    }
 }
 
-Task UnitTests `
-	-description "Run all unit tests" `
-	-depends Build `
-	-precondition { $(Get-ChildItem -Path $outputDirectory *.Tests.dll).Count -gt 0 } `
-{
-	$assemblies = Get-ChildItem -Path $outputDirectory *.Tests.dll `
-		| ForEach-Object { Quote-String($PSItem.FullName) }
-
-	$testResultsXml = Quote-String("$testResultsDirectory\{0}Results.xml" -f $Task.Name)
-	$testOutput = $testResultsXml -replace 'xml','txt'
-
-	$nunitArgs = "$assemblies /result:$testResultsXml /out=$testOutput /noheader"
-
-	Run-Tests -openCoverExe $openCover `
-			  -testRunner $nunit `
-			  -testRunnerArgs $nunitArgs `
-			  -coverageReportPath $testCoverageReportPath `
-			  -filter $testCoverageFilter `
-			  -excludeByAttribute $testCoverageExclusionAttribute `
-			  -excludeByFile $testCoverageExcludeFiles
+Task Compile.Assembly -Depends Requires.MSBuild, Requires.BuildDir {
+    exec { 
+        & $build $solutionFile "/p:Configuration=$buildConfiguration;OutDir=$outputDirectory" /m /v:M /fl /nr:false
+    }
 }
 
-Task AcceptanceTests `
-	-description "Run all acceptance tests" `
-	-depends Build `
-	-precondition { $(Get-ChildItem -Path $outputDirectory *.Requirements.dll).Count -gt 1 } `
-{
-	# Get the acceptance testing assemblies,
-	#  except for the framework one, which doesn't currently have any tests in it.
-	$assemblies = Get-ChildItem -Path $outputDirectory *.Requirements.dll `
-		| Where-Object { $PSItem.Name -NotMatch "Framework" } `
-		| ForEach-Object { Quote-String($PSItem.FullName) }
-
-	$testResultsXml = Quote-String("$testResultsDirectory\{0}Results.xml" -f $Task.Name)
-	$testOutput = $testResultsXml -replace 'xml','txt'
-
-	$nunitArgs = "$assemblies /result:$testResultsXml /out=$testOutput /noheader"
-
-	Run-Tests -openCoverExe $openCover `
-			  -testRunner $nunit `
-			  -testRunnerArgs $nunitArgs `
-			  -coverageReportPath $testCoverageReportPath `
-			  -filter $testCoverageFilter `
-			  -excludeByAttribute $testCoverageExclusionAttribute `
-			  -excludeByFile $testCoverageExcludeFiles
-}
-
-Task PesterTests `
-	-description "Run all PowerShell Pester tests" `
-{
-	$pesterTestsDirectory = Join-Path $solutionDirectory "TW.Resfit.Build"
-	$pesterResultsFile = Join-Path $testResultsDirectory PesterTests.xml
-
-	Exec {
-		& $pester $pesterTestsDirectory -OutputFile $pesterResultsFile -OutputFormat NUnitXml
-	}
-}
-
-Task Package `
-	-description "Create all packages" `
-	-depends PackageNuget
-
-Task PackageZip `
-	-description "Package the application as a zip file" `
-	-depends BuildAndRunAllTests `
-{
-	$assemblies = @(
-		"TW.Resfit.Console.dll",
-		"TW.Resfit.Core.dll",
-		"TW.Resfit.FileUtils.dll",
-		"TW.Resfit.Framework.dll"
-		# ...
-	)
-
-	$filesToPackage = Get-ChildItem -Path $outputDirectory -Recurse -Include $assemblies
-
-	ForEach($file in $filesToPackage) {
-		Copy-Item $file $releaseDirectory
-	}
-
-	$archivePath = Join-Path $releaseDirectory "TW.Resfit.7z"
-
-	Exec { & $7zip a -r -mx3 $archivePath "$releaseDirectory\*"	}
-}
-
-Task PackageNuget `
-	-description "Package the application as a nuget package" `
-	-depends PackageZip `
-{
-	Assert ($script:version -ne $null) "The version string has not been built"
-
-    Exec {
-		& $nuget pack $coreNuspec `
-			-version $script:version `
-			-outputdirectory "$releaseDirectory" `
-			-basepath "$releaseDirectory"
-	}
-}
-
-Task PublishNuget `
-	-description "Publish the nuget packages" `
-	-depends PackageNuget `
-{
-	Assert ($env:NUGET_API_KEY -ne $null) "Set `$env:NUGET_API_KEY in your PowerShell environment"
-
-	$nugetPackages = (Get-ChildItem -Path $releaseDirectory -Recurse *.nupkg).FullName
-
-	Exec {
-		ForEach($nupkg in $nugetPackages) {
-			& $nuget push -ApiKey $env:NUGET_API_KEY $nupkg
-		}
-	}
-}
-
-Task Version `
-	-description "Create the product version string" `
-{
-	$today = $(Get-Date)
-
-	$year = $today.Year
-	$day = $today.DayOfYear
-	$min = [int]$today.TimeOfDay.TotalMinutes
-
-	[string]$version = "0.$year.$day.$min"
-
-	$script:version = $version
-
-	if ($env:APPVEYOR) {
-		Update-AppveyorBuild -Version $version
-	}
-
-	Write-CommonAssemblyInfo $buildProjectDirectory $version $(Get-CommitHash)
+Task Unit.Tests -Depends Compile.Assembly {
+    exec {
+        & $nunit $outputDirectory\$testProject.dll
+    }
 }
