@@ -21,6 +21,8 @@
 
 matches=$(exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\build.ps1")
 
+echo "$matches"
+
 if [ ! -z "$matches" ]
 then
 	cat <<\EOT
