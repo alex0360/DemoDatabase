@@ -25,7 +25,7 @@ namespace TestDataBase
 
             _logger.Insert.Information("Finalizado");
 
-            Assert.Equals(result, null);
+            Assert.IsNotNull(result);
         }
     }
 }
