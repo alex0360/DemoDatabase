@@ -23,10 +23,10 @@ matches=$(exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\build.
 
 echo "$matches"
 
-if [ ! -z "$matches" ]
+if [ "$matches" == 0 ]
 then
 	cat <<\EOT
-Error: Words from the blacklist were present in the diff:
+Error :
 EOT
 	echo $matches
 	exit 1
