@@ -11,11 +11,11 @@ $packageDirectory = Join-Path $solutionDirectory "packages"
 # Make sure we have a version of the nuget executable
 $nuget = Get-Command NuGet -ErrorAction SilentlyContinue | Select-Object -Last 1
 
-if ($nuget -eq $null) {    
-	$nuget = ".\nuget.exe"
-    echo " >> Downloading nuget to this directory: $($nuget)"
-    iwr https://www.nuget.org/nuget.exe -OutFile $nuget
-}
+#if ($nuget -eq $null) {    
+#	$nuget = ".\nuget.exe"
+#    echo " >> Downloading nuget to this directory: $($nuget)"
+#    iwr https://www.nuget.org/nuget.exe -OutFile $nuget
+#}
 
 # Restore nuget packages required by the build script
 # Write-Host "Restoring nuget packages required by the build"
