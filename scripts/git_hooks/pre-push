@@ -21,10 +21,10 @@
 
 matches=$(exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\build.ps1")
 
-echo $matches
-echo $matches[0]
+result=$matches[0:0]
+echo $result
 
-if [ $matches[0] != 0 ]
+if [ $result != 0 ]
 then
 	cat <<\EOT
 Error :
