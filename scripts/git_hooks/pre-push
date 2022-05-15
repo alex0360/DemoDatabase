@@ -21,10 +21,9 @@
 
 matches=$(exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\build.ps1")
 
-result=$matches[0:0]
-echo $result
+$matches
 
-if [ $result != "0" ]
+if [ $matches -match '[E|e](rror|xception)']
 then
 	cat <<\EOT
 Error :
