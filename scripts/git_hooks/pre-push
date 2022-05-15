@@ -23,7 +23,9 @@ matches=$(exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\build.
 
 $matches
 
-if [ $matches -match '[E|e](rror|xception)']
+result = $($matches -match '[E|e](rror|xception)')
+
+if [ $result]
 then
 	cat <<\EOT
 Error :
