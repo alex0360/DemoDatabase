@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh; C:/Program\ Files/Git/usr/bin/sh.exe
 
 # An example hook script to verify what is about to be pushed.  Called by "git
 # push" after it has checked the remote status, but before anything has been
@@ -21,16 +21,12 @@
 
 matches=$(exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\build.ps1")
 
-$matches
+echo grep -P '[E|e](rror|xception)' $matches
 
-result = $($matches -match '[E|e](rror|xception)')
-
-if [ $result]
+if grep -P '[E|e](rror|xception)' <<< $matches
 then
 	cat <<\EOT
-Error :
 EOT
-	echo $matches
 	exit 1
 fi
 

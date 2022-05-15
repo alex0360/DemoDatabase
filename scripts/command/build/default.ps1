@@ -70,9 +70,6 @@ Task Requires.BuildDir {
         Write-Host "Creating build folder $outputDirectory"
         mkdir $outputDirectory > $null
     }
-    else {
-        Write-Host "Build folder is: $outputDirectory"
-    }
 }
 
 Task Compile.Assembly -Depends Requires.MSBuild, Requires.BuildDir {
