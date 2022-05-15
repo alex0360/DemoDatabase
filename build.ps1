@@ -52,6 +52,6 @@ if ($isFail)
     exit $LASTEXITCODE
 }
 
-Write-Output ("`r`nBuild finished with code: {0}" -f $LASTEXITCODE)
+Write-Output ("`r`n{0}" -f $LASTEXITCODE)
 
 exit $LASTEXITCODE
