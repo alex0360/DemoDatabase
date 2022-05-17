@@ -21,8 +21,6 @@
 
 matches=$(exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\build.ps1")
 
-echo grep -P '[E|e](rror|xception)' $matches
-
 if grep -P '[E|e](rror|xception)' <<< $matches
 then
 	cat <<\EOT
