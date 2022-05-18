@@ -14,7 +14,7 @@ namespace DemoDatabase
         {
             _logger.Insert.Information("Iniciando");
 
-            _logger.Insert.Information(dateTime.ToString());
+            _logger.Insert.Information(dateTime.ToString())
 
             _logger.Insert.Information($"En {dateTime.RealTimeUntilNow()}");
 
